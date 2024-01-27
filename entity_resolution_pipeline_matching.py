@@ -5,7 +5,9 @@ import time
 from pandas import Series
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import csv
 
+from entity_resolution_pipeline_blocking import divide_blocks_structured_keys
 
 # global variable
 global_vectorizer = TfidfVectorizer()
@@ -120,18 +122,16 @@ def baseline_pipeline(df1: pd.DataFrame, df2: pd.DataFrame, similarity_threshold
     :param similarity_metric: The metric used to calculate similarity
     :return:
     """
-
+    print("Baseline pipeline started!")
     start = time.time()
-    similar_pairs = []
 
-    for _, row1 in df1.iterrows():
-        for _, row2 in df2.iterrows():
-            similarity = calculate_similarity(row1=row1,
-                                              row2=row2,
-                                              similarity_metric=similarity_metric,
-                                              key_columns=["Title", "Author"])
-            if similarity >= similarity_threshold:
-                similar_pairs.append((row1, row2))
+    key_blocks_structured_keys = divide_blocks_structured_keys(df1=df1,
+                                                               df2=df2,
+                                                               column_name="Year")
+    similar_pairs = row_matching_structured_keys(blocks=key_blocks_structured_keys,
+                                                 column_name="Year",
+                                                 similarity_threshold=similarity_threshold,
+                                                 similarity_metric=similarity_metric)
 
     # write similar rows into a file named Matched Entities_<similarity_metric>.csv
     # write_series_to_csv(series_list=similar_rows, file_name=f"Matched Entities {similarity_metric}.csv")
@@ -193,18 +193,44 @@ def calculate_similarity(row1: pd.Series, row2: pd.Series, similarity_metric: st
     return 0
 
 
-def write_series_to_csv(series_list: list[pd.Series], file_name: str = "Matched Entities.csv"):
+def calculate_metrics(base_pairs: list[tuple], comparison_pairs: list[tuple]):
     """
-    The function writes a list of pd.Series into a csv
-
-    :param series_list:
-    :param file_name:
+    This function compares the base pipeline and ER pipelines and returns precision, recall, f1_score
+    :param base_pairs:
+    :param comparison_pairs:
     :return:
     """
 
-    # Combine all Series into a DataFrame
-    df = pd.DataFrame(series_list)
+    def to_hashable(pair):
+        return tuple(pair[0].values), tuple(pair[1].values)
 
-    # Write DataFrame to CSV
-    df.to_csv(file_name, index=False)
+    # Convert lists of pairs of pd.Series to sets of hashable tuples
+    base_pairs_set = set(map(to_hashable, base_pairs))
+    comparison_pairs_set = set(map(to_hashable, comparison_pairs))
 
+    # Calculate True Positives, False Positives, and False Negatives
+    true_positives = len(base_pairs_set & comparison_pairs_set)
+    false_positives = len(comparison_pairs_set - base_pairs_set)
+    false_negatives = len(base_pairs_set - comparison_pairs_set)
+
+    # Calculate Precision, Recall, and F1 Score
+    precision = true_positives / (true_positives + false_positives) if true_positives + false_positives > 0 else 0
+    recall = true_positives / (true_positives + false_negatives) if true_positives + false_negatives > 0 else 0
+    f1_score = 2 * (precision * recall) / (precision + recall) if precision + recall > 0 else 0
+
+    return precision, recall, f1_score
+
+
+def write_similar_pairs_to_csv(similar_pairs: list[tuple], file_name: str = "Matched Entities.csv"):
+    """
+        Write the pairs to a CSV file. Each pair is converted to a string and written as a row in the CSV.
+
+        :param similar_pairs: List of tuples representing pairs.
+        :param file_name: The name of the CSV file to write.
+        """
+    with open(file_name, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+
+        # Convert each pair to a string and write as a row
+        for pair in similar_pairs:
+            writer.writerow([str(pair)])
