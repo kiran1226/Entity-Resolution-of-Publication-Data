@@ -13,6 +13,8 @@ def read_data(path: str, encoding: str) -> pd.DataFrame:
     :param encoding: the encoding of the file
     :return:  dataframe of the read file
     """
+
+    print("Reading data started!")
     start = time.time()
     current_paper = {'Paper ID': '', 'Title': '', 'Authors': '', 'Publication Venue': '', 'Year': np.nan}
     data = []
@@ -50,31 +52,5 @@ def read_data(path: str, encoding: str) -> pd.DataFrame:
     filename = path.split("/")[1]
     end = time.time()
     duration = end - start
-    print(f"Duration {filename}: %f" % duration, "seconds")
+    print(f"Reading data finished! Duration {filename}: %f" % duration, "seconds")
     return df
-
-
-def filter_data(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    filters the given dataframe by all the publications published between 1995 and 2004 and have
-    'VLDB' and 'SIGMOD' as venues
-
-    :param df: the dataframe to filter
-    :return: filtered dataframe
-    """
-
-    # Collect all the publications published between 1995 and 2004
-    df = df[(df['Year'] >= 1995) & (df['Year'] <= 2004)]
-
-    # Collect all the publications published between 1995 and 2004 in 'VLDB' and 'SIGMOD' venues
-    df = df[df['Publication Venue'].str.contains('VLDB|SIGMOD', case=False, na=False)]
-    return df.reset_index()
-
-
-if __name__ == '__main__':
-    df_dblp = read_data("data/dblp.txt", encoding='utf-8"')
-    df_dblp = filter_data(df_dblp)
-    df_dblp.to_csv('Data_filtered/DBLP 1995 2004.csv', index=False)
-    df_acm = read_data("data/citation-acm-v8.txt", encoding='utf-8"')
-    df_acm = filter_data(df_acm)
-    df_acm.to_csv('Data_filtered/ACM 1995 2004.csv', index=False)
