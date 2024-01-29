@@ -172,45 +172,6 @@ def row_matching_ngrams(blocks: dict, similarity_threshold: float, similarity_me
     return similar_pairs
 
 
-def baseline_pipeline(df1: pd.DataFrame, df2: pd.DataFrame, similarity_threshold: float, similarity_metric: str) \
-        -> list[tuple[Series, Series]]:
-    """
-    This function iterates over every row in df1 and df2, computing the similarity between each pair of rows.
-    Rows from df1 that are similar to any row in df2, based on the specified similarity threshold and metric,
-    are collected and returned.
-
-    Notes:
-    The total duration of the process and the number of similar rows found are printed.
-
-    :param df1: The first DataFrame
-    :param df2: The second DataFrame
-    :param similarity_threshold: The threshold for considering rows similar
-    :param similarity_metric: The metric used to calculate similarity
-    :return:
-    """
-
-    start = time.time()
-    similar_pairs = []
-
-    for _, row1 in df1.iterrows():
-        for _, row2 in df2.iterrows():
-            similarity = calculate_similarity(row1=row1,
-                                              row2=row2,
-                                              similarity_metric=similarity_metric,
-                                              key_columns=["Title", "Author"])
-            if similarity >= similarity_threshold:
-                similar_pairs.append((row1, row2))
-
-    # write similar rows into a file named Matched Entities_<similarity_metric>.csv
-    # write_series_to_csv(series_list=similar_rows, file_name=f"Matched Entities {similarity_metric}.csv")
-
-    # for duration of the process
-    end = time.time()
-    duration = end - start
-    print(f"Duration Baseline : %f" % duration, "seconds", f"with {len(similar_pairs)} matches")
-    return similar_pairs
-
-
 def calculate_similarity(row1: pd.Series, row2: pd.Series, similarity_metric: str,
                          key_columns: list[str]) -> float:
     """
