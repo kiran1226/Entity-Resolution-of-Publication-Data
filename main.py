@@ -1,3 +1,4 @@
+from baseline_pipeline import baseline_pipeline
 from data_acquisition import *
 from entity_resolution_pipeline_blocking import *
 from entity_resolution_pipeline_matching import *
@@ -58,10 +59,10 @@ if __name__ == '__main__':
     """
 
     # --structured keys matching--
-    similar_pairs_jacquard_structured_keys = row_matching_structured_keys(blocks=key_blocks_structured_keys,
-                                                                          column_name="Year",
-                                                                          similarity_threshold=0.9,
-                                                                          similarity_metric='Jaccard')
+    similar_pairs_jacquard_structured_keys= row_matching_structured_keys(blocks=key_blocks_structured_keys,
+                                                                              column_name="Year",
+                                                                              similarity_threshold=0.9,
+                                                                              similarity_metric='Jaccard')
 
     precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
                                                     comparison_pairs=similar_pairs_jacquard_structured_keys)
