@@ -52,5 +52,5 @@ def read_data(path: str, encoding: str) -> pd.DataFrame:
     filename = path.split("/")[1]
     end = time.time()
     duration = end - start
-    print(f"Reading data finished! Duration {filename}: %f" % duration, "seconds")
+    print(f"Reading data finished -- Spark! Duration {filename}: %f" % duration, "seconds")
     return df
