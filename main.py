@@ -3,6 +3,7 @@ from data_acquisition import *
 from entity_resolution_pipeline_blocking import *
 from entity_resolution_pipeline_matching import *
 from data_preparation import *
+from csv_functions import *
 
 if __name__ == '__main__':
     """
@@ -59,16 +60,15 @@ if __name__ == '__main__':
     """
 
     # --structured keys matching--
-    similar_pairs_levenshtein_structured_keys_9= row_matching_structured_keys(blocks=key_blocks_structured_keys,
-                                                                              column_name="Year",
-                                                                              similarity_threshold=0.9,
-                                                                              similarity_metric='Levenshtein')
+    similar_pairs_levenshtein_structured_keys_9 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
+                                                                               column_name="Year",
+                                                                               similarity_threshold=0.9,
+                                                                               similarity_metric='Levenshtein')
 
     precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
                                                     comparison_pairs=similar_pairs_levenshtein_structured_keys_9)
 
     print(precision, recall, f1_score)
-
 
 """
     # --structured keys matching--

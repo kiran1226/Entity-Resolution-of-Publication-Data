@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 import time
 
 
@@ -26,11 +26,11 @@ def process_lines(iterator):
         yield current_paper  # Yield the last paper record
 
 
-def read_data_spark(path: str, spark: SparkSession):
-    print("Reading data started!")
+def read_data_spark(path: str, spark: SparkSession) -> DataFrame:
+    print("Reading data --Spark started! ")
     start = time.time()
 
-    # Reading the file into an RDD
+    # Reading the file into a Resilient Distributed Dataset
     rdd = spark.sparkContext.textFile(path)
 
     # Process each partition of lines to extract fields
@@ -46,6 +46,6 @@ def read_data_spark(path: str, spark: SparkSession):
     end = time.time()
 
     filename = path.split("/")[1]
-    print(f"Reading data finished! Duration {filename}: {end - start} seconds")
+    print(f"Reading data --Spark finished!  Duration {filename}: {end - start} seconds")
     return df
 
