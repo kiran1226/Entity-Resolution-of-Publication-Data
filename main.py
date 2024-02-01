@@ -72,19 +72,8 @@ if __name__ == '__main__':
 
 """
     # --structured keys matching--
-    # --Levenshtein 0.8--
-    similar_pairs_levenshtein_structured_keys_8 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
-                                                                               column_name="Year",
-                                                                               similarity_threshold=0.8,
-                                                                               similarity_metric='Levenshtein')
-
-    precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
-                                                    comparison_pairs=similar_pairs_levenshtein_structured_keys_8)
-
-    print(precision, recall, f1_score)
-
-
-    # --Levenshtein 0.7--
+    
+    # --Levenshtein = 0.7--
         similar_pairs_levenshtein_structured_keys_7= row_matching_structured_keys(blocks=key_blocks_structured_keys,
                                                                               column_name="Year",
                                                                               similarity_threshold=0.7,
@@ -95,15 +84,43 @@ if __name__ == '__main__':
 
     print(precision, recall, f1_score)
     
-    
-    # --Jaccard 0.85--
-        similar_pairs_jaccard_structured_keys_85 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
+    # --Levenshtein = 0.8--
+    similar_pairs_levenshtein_structured_keys_8 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
                                                                                column_name="Year",
-                                                                               similarity_threshold=0.85,
+                                                                               similarity_threshold=0.8,
+                                                                               similarity_metric='Levenshtein')
+
+    precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
+                                                    comparison_pairs=similar_pairs_levenshtein_structured_keys_8)
+
+    print(precision, recall, f1_score)
+    
+    
+    # --Levenshtein = 0.9--
+    similar_pairs_levenshtein_structured_keys_9 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
+                                                                               column_name="Year",
+                                                                               similarity_threshold=0.9,
+                                                                               similarity_metric='Levenshtein')
+
+    precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
+                                                    comparison_pairs=similar_pairs_levenshtein_structured_keys_9)
+
+    print(precision, recall, f1_score)
+
+
+    
+    
+    
+    
+    
+     # --Jaccard 0.75--
+    similar_pairs_jaccard_structured_keys_75 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
+                                                                               column_name="Year",
+                                                                               similarity_threshold=0.75,
                                                                                similarity_metric='Jaccard')
 
     precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
-                                                    comparison_pairs=similar_pairs_jaccard_structured_keys_85)
+                                                    comparison_pairs=similar_pairs_jaccard_structured_keys_75)
 
     print(precision, recall, f1_score)
     
@@ -120,16 +137,22 @@ if __name__ == '__main__':
     print(precision, recall, f1_score)
     
     
-    # --Jaccard 0.75--
-    similar_pairs_jaccard_structured_keys_75 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
+    # --Jaccard 0.85--
+        similar_pairs_jaccard_structured_keys_85 = row_matching_structured_keys(blocks=key_blocks_structured_keys,
                                                                                column_name="Year",
-                                                                               similarity_threshold=0.75,
+                                                                               similarity_threshold=0.85,
                                                                                similarity_metric='Jaccard')
 
     precision, recall, f1_score = calculate_metrics(base_pairs=similar_pairs_baseline,
-                                                    comparison_pairs=similar_pairs_jaccard_structured_keys_75)
+                                                    comparison_pairs=similar_pairs_jaccard_structured_keys_85)
 
     print(precision, recall, f1_score)
+    
+    
+    
+    
+    
+   
     
     
     
